@@ -1,0 +1,130 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Download File</h1>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="m-0 font-weight-bold text-primary">Downloads</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <form #siteForm="ngForm">
+                                <div class="row mb-3" style="text-align: right;">
+                                    <div class="col-sm-4 basic-center">
+                                        <label for="site" class="col-form-label col-sm-3">Site</label>
+                                        <div class="col-sm-9">
+
+                                            <!-- Choose Site -->
+
+                                            <ng-select [items]="site_options"                                                        
+                                                        bindLabel="site_name"
+                                                        bindValue="site_id"
+                                                        placeholder="Select site"
+                                                        id="site"
+                                                        [(ngModel)]="site_id"
+                                                        name="site"
+                                                        #site="ngModel"
+                                                        appendTo="body"
+                                                        (change)="changeSite($event)">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 basic-center">
+                                        <label for="environment" class="col-form-label col-sm-6">Environment</label>
+                                        <div class="col-sm-6">
+
+                                            <!-- Choose Env -->
+
+                                            <ng-select [items]="env_options"
+                                                        bindLabel="env_id"
+                                                        bindValue="env_id"
+                                                        placeholder="Select env"
+                                                        id="environment"
+                                                        [(ngModel)]="env_id"
+                                                        name="environment"
+                                                        #environment="ngModel"
+                                                        appendTo="body"
+                                                        (change)="changeEnv($event)">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="modules?.length!=0">
+                                        <button type="button" class="btn btn-warning" 
+                                            style="margin-right: 10px;"
+                                            [routerLink]="['/generate-file', {site_id: site_id, env_id: env_id}]">Edit</button>
+                                        <button type="button" class="btn btn-danger"
+                                            (click)="onDelete()">Delete</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Form Begin -->
+                            <form #moduleForm="ngForm" (ngSubmit)="onSubmit()">
+                                <table class="table">
+                                    <thead>
+                                        <th>Module</th>
+                                        <th>Agent</th>
+                                        <th>Supervisor</th>
+                                        <th>Manager</th>
+                                        <th>Expired Date</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let module of modules; index as i">
+                                            <th class="col-sm-3">{{module.module_name}}</th>
+                                            <td class="col-sm-2">{{module.agent}}</td>
+                                            <td class="col-sm-2">{{module.supervisor}}</td>
+                                            <td class="col-sm-2">{{module.manager}}</td>
+                                            <td class="col-sm-3" *ngIf="module.expired_date=='Never'">{{module.expired_date}}</td>
+                                            <td class="col-sm-3" *ngIf="module.expired_date!='Never'">{{module.expired_date | date : "dd/MM/yyyy" : '+700'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-primary" 
+                                    [hidden]="modules?.length==0">Download File</button>
+                                <div class="basic-center" [hidden]="modules?.length!=0">No files found.</div>
+                            </form>
+                            <!-- Form End -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+</div>

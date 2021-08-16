@@ -1,0 +1,131 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar [flag]="sidebar_flag"></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar [flag]="topbar_flag" (navback)="goBack()"></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Menu Settings</h1>
+                    </div>
+
+                    <div class="row">
+                        <mat-stepper orientation="vertical" (selectionChange)="search_input=''; onSearch()">
+                    
+                            <ng-template matStepperIcon="edit" let-index="index">
+                                {{index + 1}}
+                            </ng-template>
+
+                            <mat-step *ngFor="let menu of menus; index as i">
+                                <ng-template matStepLabel>{{menu_names[i]}} Permissions</ng-template>
+                                <ng-template matStepContent>
+                                  <!-- Content Row -->
+                                  <div class="row margin-tab">
+  
+                                      <!-- Add Users -->
+                                      <div class="col-lg-6">
+                                          <div class="card mb-4">
+                                              <div class="card-header py-3">
+                                                <h6 class="m-0 font-weight-bold text-primary">Add Users</h6>
+                                              </div>
+                                              <div class="card-body scroll-auto">
+
+                                                <input class="form-control" placeholder="Search"
+                                                    style="margin-bottom: 20px;"
+                                                    #search="ngModel" name="search" [(ngModel)]="search_input" (input)="onSearch()">
+
+                                                <mat-list *ngFor="let dept of depts_data">
+                                                    <div mat-subheader>{{dept}}</div>
+                                                    <mat-list-item *ngFor="let user of filtered_data"
+                                                        [hidden]="user.department_name != dept">
+                                                            <span>
+                                                                {{user.first_name}} {{user.last_name}}
+                                                            </span>
+                                                            <i class="far fa-plus-square text-info pointer-click"
+                                                                (click)="addItem(user, menu)"></i>
+                                                    </mat-list-item>
+                                                    <mat-divider></mat-divider>
+                                                </mat-list>
+                                              </div>
+                                          </div>
+                                      </div>
+  
+                                      <!-- View Users -->
+                                      <div class="col-lg-6">
+                                          <div class="card mb-4">
+                                              <!-- Card Header - Dropdown -->
+                                              <div class="card-header py-3">
+                                                  <h6 class="m-0 font-weight-bold text-primary">View Users</h6>
+                                              </div>
+                                              <!-- Card Body -->
+                                              <div class="card-body scroll-auto">
+                                
+                                                <mat-list *ngFor="let data of db_data | keyvalue"
+                                                    [hidden]="data.key != menu">
+                                                    <mat-list-item *ngFor="let d of data.value">
+                                                            <span class="text-dark">
+                                                                {{d?.first_name}} {{d?.last_name}}
+                                                            </span>
+                                                            <i class="far fa-minus-square text-info pointer-click"
+                                                                (click)="deleteItem(d, menu)"></i>
+                                                    </mat-list-item>
+                                                </mat-list>
+                                                <mat-list *ngFor="let temp of temp_data | keyvalue"
+                                                    [hidden]="temp.key != menu">
+                                                    <mat-list-item *ngFor="let t of temp.value">
+                                                            <span class="text-primary">
+                                                                {{t?.first_name}} {{t?.last_name}}
+                                                            </span>
+                                                            <i class="far fa-minus-square text-info pointer-click"
+                                                                (click)="deleteItem(t, menu)"></i>
+                                                    </mat-list-item>
+                                                </mat-list>
+                                                
+                                              </div>
+                                          </div>
+                                          <button class="btn btn-primary float-right" 
+                                                [hidden]="getSaveHidden(menu)"
+                                                (click)="onSubmit(menu)">Save</button>
+                                      </div>
+                                  </div>
+                                </ng-template>
+                              </mat-step>
+
+                          </mat-stepper>
+
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a> 
+
+</div>

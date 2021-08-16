@@ -1,0 +1,200 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Generate File</h1>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="m-0 font-weight-bold text-primary">File Form</h5>
+                        </div>
+
+                        <div class="card-body">
+
+                            <form #siteForm="ngForm">
+                                <div class="row mb-3" style="text-align: right;">
+                                    <div class="col-sm-4 basic-center">
+                                        <label for="site" class="col-form-label col-sm-3">Site</label>
+                                        <div class="col-sm-9">
+                                            <!-- Choose Site -->
+                                            <ng-select [items]="site_module_data['site-module']"                                                        
+                                                        bindLabel="name"
+                                                        bindValue="id"
+                                                        placeholder="Select site"
+                                                        id="site"
+                                                        [(ngModel)]="site_id"
+                                                        name="site"
+                                                        #site="ngModel"
+                                                        appendTo="body"
+                                                        (change)="onChangeSiteForm($event)"
+                                                        required>
+                                            </ng-select>
+                                            <div *ngIf="(!site_id) && (site.dirty || site.touched)"
+                                                class="text-danger">
+                                                Please select site.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 basic-center">
+                                        <label for="environment" class="col-form-label col-sm-6">Environment</label>
+                                        <div class="col-sm-6">
+                                            <!-- Choose Env -->
+                                            <ng-select [items]="env_data"     
+                                                        bindLabel="name"
+                                                        bindValue="name"
+                                                        placeholder="Select env"
+                                                        id="environment"
+                                                        [(ngModel)]="env_id"
+                                                        name="environment"
+                                                        #environment="ngModel"
+                                                        appendTo="body"
+                                                        (change)="onChangeSiteForm()"
+                                                        required>
+                                            </ng-select>
+                                            <div *ngIf="(!env_id) && (environment.dirty || environment.touched)"
+                                                class="text-danger">
+                                                Please select env.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 basic-center">
+                                        <label for="file_name" class="col-form-label col-sm-4">File Name</label>
+                                        <div class="col-sm-8">
+                                            <!-- Keyword -->
+                                            <input class="form-control" id="file_name"
+                                                    [(ngModel)]="lic_name"
+                                                    name="file_name"
+                                                    #file_name="ngModel"
+                                                    (change)="onChangeKeyword($event)"
+                                                    required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Form Begin -->
+                            <form #moduleForm="ngForm" (ngSubmit)="onSubmit(siteForm)">
+                                <table class="table">
+                                    <thead>
+                                        <th>Module</th>
+                                        <th>Agent</th>
+                                        <th>Supervisor</th>
+                                        <th>Manager</th>
+                                        <th>Expired Date</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let file of files; index as i">
+                                            <th class="col-sm-3">{{details[i].name}}</th>
+                                            
+                                            <!-- Agent -->
+                                            
+                                            <td class="col-sm-2">
+                                                <input type="number" class="form-control" 
+                                                    value="0" min="-1" [(ngModel)]="file.license_agent"
+                                                    name="agent{{i}}" required/>
+                                                <div *ngIf="file.license_agent==null"
+                                                    class="text-danger">
+                                                    Please enter number of agents.
+                                                </div>
+                                            </td>
+
+                                            <!-- Supervisor -->
+
+                                            <td class="col-sm-2">
+                                                <input type="number" class="form-control" 
+                                                    value="0" min="-1" [(ngModel)]="file.license_supervisor"
+                                                    name="supervisor{{i}}" required/>
+                                                <div *ngIf="file.license_supervisor==null"
+                                                    class="text-danger">
+                                                    Please enter number of supervisors.
+                                                </div>
+                                            </td>
+
+                                            <!-- Manager -->
+
+                                            <td class="col-sm-2">
+                                                <input type="number" class="form-control" 
+                                                    value="0" min="-1" [(ngModel)]="file.license_manager"
+                                                    name="manager{{i}}" required/>
+                                                <div *ngIf="file.license_manager==null"
+                                                    class="text-danger">
+                                                    Please enter number of managers.
+                                                </div>
+                                            </td>
+
+                                            <!-- Expired Date -->
+
+                                            <td class="col-sm-3">
+                                                <mat-form-field appearance="outline">
+                                                    <mat-label>Choose date</mat-label>
+                                                    <input 
+                                                        matInput [matDatepicker]="picker"
+                                                        [disabled]="expired_date[i].never"
+                                                        [(ngModel)]="expired_date[i].date"
+                                                        name="date{{i}}"
+                                                        (dateChange)="onDateChange()"
+                                                    >
+                                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </mat-form-field>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" [(ngModel)]="expired_date[i].never"
+                                                    name="never{{i}}" (change)="onDateChange()">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                      Never
+                                                    </label>
+                                                <div *ngIf="expired_date[i].never==false && expired_date[i].date==null"
+                                                    class="text-danger">
+                                                    Please select expired date.
+                                                </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button type="submit" class="btn btn-primary" 
+                                    [disabled]="moduleForm.invalid || siteForm.invalid || !exp_valid"
+                                    [hidden]="details.length==0">Generate File</button>
+                                <div class="basic-center" [hidden]="details.length!=0">No modules found.</div>
+                            </form>
+                            <!-- Form End -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+</div>

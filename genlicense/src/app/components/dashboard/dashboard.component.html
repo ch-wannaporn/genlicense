@@ -1,0 +1,140 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Site Card -->
+                        <div class="col-xl-4 col-md-4 mb-4 pointer-click" routerLink="/site" *ngIf="menu.site">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Add a site</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Site</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-building fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module Card -->
+                        <div class="col-xl-4 col-md-4 mb-4 pointer-click" routerLink="/module" *ngIf="menu.module">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Add a module</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Module</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-laptop-code fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Site Module Card -->
+                        <div class="col-xl-4 col-md-4 mb-4 pointer-click" routerLink="/site-module" *ngIf="menu.site_module">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Add modules to site</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Site-Module</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-network-wired fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+
+                        <!-- Generate File Card -->
+                        <div class="col-xl-6 col-lg-6 pointer-click" routerLink="/generate-file" *ngIf="menu.generate_file">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Generate File</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 16rem;"
+                                            src="../../../assets/img/file.svg" alt="...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Download File -->
+                        <div class="col-xl-6 col-lg-6 pointer-click" routerLink="/download-file" *ngIf="menu.download_file">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Download File</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 16rem;"
+                                            src="../../../assets/img/direct-download.svg" alt="...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>  
+
+</div>
+

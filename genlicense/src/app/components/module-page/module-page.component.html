@@ -1,0 +1,266 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Module</h1>
+                    </div>
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">Module Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <mat-tab-group mat-align-tabs="center">
+
+                                    <!-- Tab View Data -->
+
+                                    <mat-tab label="View Data">
+
+                                        <div class="basic-center">
+                                            <div class="input-group search-tab" style="width: 50%;">
+                                                
+                                                <!-- Search Box -->
+
+                                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                                    aria-label="Search" aria-describedby="basic-addon2"
+                                                    (input)="onInput($event)">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="button">
+                                                        <i class="fas fa-search fa-sm"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                        <form #editForm="ngForm">
+                                        <table class="table">
+                                            <thead>
+                                                <th>ID <i class="fas pointer-click" 
+                                                    [class.fa-chevron-down]="sort_id" 
+                                                    [class.fa-chevron-up]="!sort_id"
+                                                    (click)="sort('ID')"></i></th>
+                                                <th>Name <i class="fas pointer-click" 
+                                                    [class.fa-chevron-down]="sort_name"
+                                                    [class.fa-chevron-up]="!sort_name" 
+                                                    (click)="sort('Name')"></i></th>
+                                                <th>Description</th>
+                                                <th>Actions</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let data of filtered_data | paginate : {
+                                                    itemsPerPage: 10,
+                                                    currentPage: page,
+                                                    totalItems: filtered_data.length
+                                                  } ; index as i">
+
+                                                    <!-- Module ID -->
+                                                    <td class="col-sm-2" [hidden]="edit_mode[i]"><p style="width:125px">{{data.module_id}}</p></td>
+                                                    <td [hidden]="!edit_mode[i]" class="col-sm-2">
+                                                        <input #id="ngModel" class="form-control" value="{{data.module_id}}"
+                                                            [(ngModel)]="edit_model.module_id" name="id"
+                                                            required pattern="^[0-9]+$" (input)="findModuleDetails(data.module_id, data.module_name)">
+                                                        
+                                                        <!-- Module ID Validation -->
+                                                        <div *ngIf="id.invalid && (id.dirty || id.touched)"
+                                                            class="text-danger">
+                                                            <div *ngIf="id.errors?.required">
+                                                                Module id is required.
+                                                            </div>
+                                                            <div *ngIf="id.errors?.pattern">
+                                                                Please use only 0-9 in module id.
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div *ngIf="edit_id_exist" class="text-danger">
+                                                            This module id already exists.
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- Module Name -->
+                                                    <td class="col-sm-4" [hidden]="edit_mode[i]"><p style="width:250px">{{data.module_name}}</p></td>
+                                                    <td [hidden]="!edit_mode[i]" class="col-sm-4">
+                                                        <input #name="ngModel" class="form-control" value="{{data.module_name}}"
+                                                                [(ngModel)]="edit_model.module_name" name="name"
+                                                                required pattern="^[A-Z0-9]+$"
+                                                                oninput="this.value=this.value.toUpperCase()"
+                                                                (input)="findModuleDetails(data.module_id, data.module_name)">
+                                                    
+                                                    <!-- Module Name Validation -->
+                                                            
+                                                    <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                                                        class="text-danger">                                               
+                                                        <div *ngIf="name.errors?.required">
+                                                            Module name is required.
+                                                        </div>
+                                                        <div *ngIf="name.errors?.pattern">
+                                                            Please use only A-Z, 0-9 in module name.
+                                                        </div>
+                                                    </div>
+
+                                                    <div *ngIf="edit_name_exist" class="text-danger">
+                                                        This module name already exists.
+                                                    </div>
+    
+                                                    </td>
+
+                                                    <!-- Description -->
+
+                                                    <td class="col-sm-4" [hidden]="edit_mode[i]"><p style="width:250px">{{data.description}}</p></td>
+                                                    <td [hidden]="!edit_mode[i]" class="col-sm-4">
+                                                        <textarea #desc="ngModel" rows="3" class="form-control" 
+                                                            value="{{data.description}}"
+                                                            [(ngModel)]="edit_model.description" name="desc"
+                                                            (input)="findModuleDetails(data.module_id, data.module_name)"></textarea>
+                                                    </td>
+
+                                                    <!-- Actions -->
+
+                                                    <td class="col-sm-2">
+                                                        <button class="btn btn-warning" style="margin-right: 5px;" 
+                                                            type="button" (click)="onEdit(i, data)"
+                                                            [hidden]="edit_mode[i]">Edit</button>
+                                                        <button class="btn btn-danger" type="button"
+                                                            (click)="onDelete(data.module_id)" [hidden]="edit_mode[i]">Delete</button>
+                                                        <button class="btn btn-success" style="margin-right: 5px;"
+                                                            type="button" (click)="onSave(i, data._id.$oid)" 
+                                                            [hidden]="!edit_mode[i]"
+                                                            [disabled]="editForm.invalid || edit_id_exist || edit_name_exist">Save</button>
+                                                        <button class="btn btn-light" type="button"
+                                                            [hidden]="!edit_mode[i]" (click)="onCancel()">Cancel</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        </form>
+
+                                        <!--Pagination-->
+
+                                        <div class="d-flex justify-content-center">
+                                            <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="tabSize($event)">
+                                            </pagination-controls>
+                                        </div>                 
+
+                                    </mat-tab>
+                                    <mat-tab label="Add Data">
+                                    <div class="basic-center margin-tab">
+                                        <!-- Form Begin -->
+
+                                        <form #moduleForm="ngForm" (ngSubmit)="onSubmit(moduleForm)" style="width:90%" (change)="findModuleDetails()">
+                                            <div class="mb-3 row">
+                                                <label for="module_id" class="col-sm-2 col-form-label">Module ID</label>
+                                                <div class="col-sm-10">
+                                                    
+                                                    <!-- Module ID -->
+
+                                                    <input type="text" class="form-control" id="module_id" 
+                                                        [(ngModel)]="module_model.module_id" name="module_id"
+                                                        #module_id="ngModel" required pattern="^[0-9]+$"
+                                                        (input)="findModuleDetails()">
+
+                                                    <div *ngIf="module_id.invalid && (module_id.dirty || module_id.touched)"
+                                                        class="text-danger">
+                                                    
+                                                        <div *ngIf="module_id.errors?.required">
+                                                            Module id is required.
+                                                        </div>
+                                                        <div *ngIf="module_id.errors?.pattern">
+                                                            Please use only 0-9 in module id.
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                    <div *ngIf="add_id_exist" class="text-danger">
+                                                        This module id already exists.
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="module_name" class="col-sm-2 col-form-label">Module Name</label>
+                                                <div class="col-sm-10">
+                                                    
+                                                    <!-- Module Name -->
+
+                                                    <input type="text" class="form-control" id="module_name" 
+                                                    [(ngModel)]="module_model.module_name" name="module_name"
+                                                    #module_name="ngModel" required pattern="^[A-Z0-9]+$"
+                                                    oninput="this.value=this.value.toUpperCase()"
+                                                    (input)="findModuleDetails()">
+                                                    
+                                                    <div *ngIf="module_name.invalid && (module_name.dirty || module_name.touched)"
+                                                        class="text-danger">
+                                                    
+                                                        <div *ngIf="module_name.errors?.required">
+                                                            Module name is required.
+                                                        </div>
+                                                        <div *ngIf="module_name.errors?.pattern">
+                                                            Please use only A-Z, 0-9 in module name.
+                                                        </div>
+                                                        
+                                                    </div>
+
+                                                    <div *ngIf="add_name_exist" class="text-danger">
+                                                        This module name already exists.
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                                <div class="col-sm-10">
+
+                                                    <!-- Description -->
+
+                                                    <textarea class="form-control" id="description" rows="5" 
+                                                        [(ngModel)]="module_model.description" name="description"></textarea>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mb-3" [disabled]="moduleForm.invalid || add_id_exist || add_name_exist">Save</button>
+                                        </form>
+
+                                        <!-- Form End -->
+                                    </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                                
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+</div>

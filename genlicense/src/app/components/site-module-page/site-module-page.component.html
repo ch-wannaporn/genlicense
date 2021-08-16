@@ -1,0 +1,163 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Site-Module</h1>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="m-0 font-weight-bold text-primary">Site-Module Data</h5>
+                        </div>
+                        <div class="card-body">
+                            <mat-tab-group mat-align-tabs="center">
+                                <mat-tab label="View Data">
+
+                                    <div class="basic-center search-tab">
+                                        <div class="row" style="width: 90%;">
+                                            <div class="row col-sm-6" style="text-align: right;">
+                                                <label for="site_search" class="col-sm-3 col-form-label">Site</label>
+                                                <input type="text" class="form-control col-sm-6" id="site_search"
+                                                placeholder="Search..." (input)="onInputFilter($event)">
+                                            </div>
+                                            <div class="row col-sm-6" style="text-align: right;">
+                                                <label for="module_search" class="col-sm-3 col-form-label">Module</label>
+                                                <input type="text" class="form-control col-sm-6" id="module_search"
+                                                placeholder="Search..." (input)="onInputFilter($event)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+                                        <!-- This is the tree node template for leaf nodes -->
+                                        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                                        <!-- use a disabled button to provide padding for tree leaf -->
+                                        <button mat-icon-button disabled></button>
+                                        <span>
+                                            <span class="node-id-style">{{node.id}} :</span>
+                                            {{node.name}}
+                                        </span>
+                                        <a class="nav-link trash-icon" *ngIf="node.level==1"
+                                            (click)="onDel(node)">
+                                            <i class="far fa-trash-alt"></i>
+                                        </a>
+                                        </mat-tree-node>
+                                        <!-- This is the tree node template for expandable nodes -->
+                                        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                                        <button mat-icon-button matTreeNodeToggle
+                                                [attr.aria-label]="'Toggle ' + node.name">
+                                            <mat-icon class="mat-icon-rtl-mirror">
+                                            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                            </mat-icon>
+                                        </button>
+                                        <span>
+                                            <span class="node-id-style">{{node.id}} :</span>
+                                            {{node.name}}
+                                        </span>
+                                        </mat-tree-node>
+                                    </mat-tree>
+                                    <div class="float-right">
+                                        <p class="pagination" style="display: inline-block;">
+                                            <button class="btn btn-primary" [disabled]="page == 1" (click)="onClick('prev')">PREV</button>
+                                            <span style="margin: 10px;">Page 
+                                                    <select class="form-select" [value]="page" (change)="changePage($event)">
+                                                        <option *ngFor="let c of [].constructor(numberOfPages()); index as i" value="{{i+1}}">{{i+1}}</option>
+                                                    </select>
+                                                     of {{ numberOfPages() }}</span>
+                                            <button class="btn btn-primary" [disabled]="page >= site_module_data.length/10" (click)="onClick('next')">NEXT</button>
+                                        </p>
+                                    </div>
+                                </mat-tab>
+                                <mat-tab label="Add Data">
+
+                                    <div class="basic-center margin-tab">
+                                        <form #sitemoduleForm="ngForm" style="width: 90%;" (ngSubmit)="onSubmit(sitemoduleForm)">
+                                            <div class="mb-3 row">
+                                                <label for="site" class="col-form-label col-sm-2">Site</label>
+                                                <div class="col-sm-10">
+                                                    <ng-select [items]="siteoptions"
+                                                                bindLabel="name"
+                                                                bindValue="id"
+                                                                placeholder="Select site"
+                                                                id="site"
+                                                                [(ngModel)]="site_module_model.site_id"
+                                                                name="site"
+                                                                #site="ngModel"
+                                                                appendTo="body"
+                                                                (change)="onChangeOption($event)">
+                                                    </ng-select>
+                                                    <div *ngIf="(!site_module_model.site_id) && (site.dirty || site.touched)"
+                                                    class="text-danger">
+                                                        Please select site.
+                                                    </div>
+                                               </div>                                                  
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="module" class="col-form-label col-sm-2">Module</label>
+                                                <div class="col-sm-10">
+                                                    <ng-select [items]="moduleoptions"
+                                                                bindLabel="module_name"
+                                                                bindValue="module_id"
+                                                                placeholder="Select module"
+                                                                id="module"
+                                                                [(ngModel)]="site_module_model.module_id"
+                                                                name="module"
+                                                                #module="ngModel"
+                                                                appendTo="body">
+                                                    </ng-select>
+                                                    <div *ngIf="(!site_module_model.module_id) 
+                                                        && (module.dirty || module.touched)"
+                                                    class="text-danger">
+                                                        Please select module.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" 
+                                            [disabled]="!(site_module_model.site_id && site_module_model.module_id)">Save</button>
+                                        </form>
+                                    </div>
+                                    
+                                </mat-tab>
+                            </mat-tab-group>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+</div>
+

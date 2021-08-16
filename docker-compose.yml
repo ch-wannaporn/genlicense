@@ -1,0 +1,46 @@
+version: '3.8'
+services: 
+    mongodb:
+        image: 'mongo'
+        restart: unless-stopped
+        container_name: 'mongodb'
+        volumes: 
+            - ./db/mongodb/genlicense.js:/docker-entrypoint-initdb.d/genlicense.js:ro
+            - ./db/mongodb/mongo-volume:/data/db
+        networks: 
+            - backend
+    mysqldb:
+        image: 'mysql'
+        restart: unless-stopped
+        container_name: 'mysqldb'
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ctasia
+        volumes:
+            - ./db/mysql/ctasia.sql:/docker-entrypoint-initdb.d/ctasia.sql:ro
+            - ./db/mysql/mysql-volume:/var/lib/mysql
+        networks: 
+            - backend
+    flask:
+        build: ./server
+        restart: unless-stopped
+        container_name: 'flask'
+        ports: 
+            - '8001:8000'
+        networks: 
+            - backend
+            - frontend
+    angular:
+        build: ./genlicense
+        restart: unless-stopped
+        container_name: 'angular'
+        ports: 
+            - '8080:80'
+        networks: 
+            - frontend
+
+networks:
+    frontend:
+        driver: bridge
+    backend:
+        driver: bridge

@@ -1,0 +1,81 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.basic-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pointer-click {
+    cursor: pointer;
+}
+
+.margin-tab {
+    margin-top: 20px;
+}
+
+.search-tab {
+    margin: 20px;
+}
+
+.search-box-frame {
+    width:50%; 
+    display: flex; 
+    flex-direction: row;
+}
+
+.node-id-style {
+    color: #e83e8c; 
+    margin-right: 20px;
+}
+
+.trash-icon {
+    color: lightgray !important; 
+    cursor: pointer !important;
+}
+
+.scroll-auto {
+    max-height: 300px; 
+    overflow-y: auto;
+}
+  
+html, body { height: 100%; }
+
+.mat-tab-label{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+pagination-controls .ngx-pagination li.current {
+    background: #4e73df;
+}
+
+.mat-simple-snackbar {
+    font-size: 16px;
+}
+
+.mat-icon{
+    font-family: 'Material Icons' !important;
+}
+
+.mat-tree-node {
+    font-size: 16px
+}
+
+.mat-stepper-vertical {
+    width: 100%;
+}
+
+.mat-step-label {
+    width: 100%;
+    font-size: 16px;
+}
+
+.mat-step-icon-state-edit {
+    background-color: rgba(0, 0, 0, 0.54) !important;
+}
+
+.mat-list-item-content {
+    justify-content: space-between !important;
+}

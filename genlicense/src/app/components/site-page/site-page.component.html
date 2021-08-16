@@ -1,0 +1,261 @@
+<div id="page-top" class="content">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+      <app-sidebar></app-sidebar>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <app-topbar></app-topbar>
+
+                <!-- Begin Page Content -->
+                
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Site</h1>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h5 class="m-0 font-weight-bold text-primary">Site Data</h5>
+                        </div>
+                        <div class="card-body">
+                            <mat-tab-group mat-align-tabs="center">
+                                <!-- Tab View Data -->
+                                <mat-tab label="View Data">
+
+                                    <div class="basic-center">
+                                        <div class="input-group search-tab" style="width: 50%;">
+                                            <!-- Search Box -->
+                                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                                aria-label="Search" aria-describedby="basic-addon2"
+                                                (input)="onInput($event)">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="button">
+                                                    <i class="fas fa-search fa-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form #editForm="ngForm">
+                                    <table class="table">
+                                        <thead>
+                                            <th>ID <i class="fas pointer-click" 
+                                                [class.fa-chevron-down]="sort_id" 
+                                                [class.fa-chevron-up]="!sort_id"
+                                                (click)="sort('ID')"></i></th>
+                                            <th>Name <i class="fas pointer-click" 
+                                                [class.fa-chevron-down]="sort_name"
+                                                [class.fa-chevron-up]="!sort_name" 
+                                                (click)="sort('Name')"></i></th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let data of filtered_data | paginate : {
+                                                itemsPerPage: 10,
+                                                currentPage: page,
+                                                totalItems: filtered_data.length
+                                                } ; index as i">
+                                                <!-- Site ID -->
+                                                <td class="col-sm-2" [hidden]="edit_mode[i]"><p style="width:125px">{{data.site_id}}</p></td>
+                                                <td class="col-sm-2" [hidden]="!edit_mode[i]">
+                                                    <input #id="ngModel" class="form-control" value="{{data.site_id}}"
+                                                        [(ngModel)]="edit_model.site_id" name="id"
+                                                        required pattern="^[A-Z0-9_-]+$"
+                                                        oninput="this.value = this.value.toUpperCase()"
+                                                        (input)="findSiteDetails(data.site_id, data.site_name)">
+                                                        <!-- Site ID Validation -->
+                                                    <div *ngIf="id.invalid && (id.dirty || id.touched)"
+                                                        class="text-danger">
+                                                        <div *ngIf="id.errors?.required">
+                                                            Site id is required.
+                                                        </div>
+                                                        <div *ngIf="id.errors?.pattern">
+                                                            Please use only A-Z, 0-9, -, _ in site id.
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div *ngIf="edit_id_exist" class="text-danger">
+                                                        This site id already exists.
+                                                    </div>
+                                                </td>
+                                                <!-- Site Name -->
+                                                <td class="col-sm-4" [hidden]="edit_mode[i]"><p style="width:250px">{{data.site_name}}</p></td>
+                                                <td class="col-sm-4" [hidden]="!edit_mode[i]">
+                                                    <input #name="ngModel" class="form-control" value="{{data.site_name}}"
+                                                            [(ngModel)]="edit_model.site_name" name="name"
+                                                            required pattern="^[a-zA-Z0-9_-\s]+$"
+                                                            (input)="findSiteDetails(data.site_id, data.site_name)">
+                                                
+                                                    <!-- Site Name Validation -->
+                                                    <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                                                        class="text-danger">                                               
+                                                        <div *ngIf="name.errors?.required">
+                                                            Site name is required.
+                                                        </div>
+                                                        <div *ngIf="name.errors?.pattern">
+                                                            Please use only a-z, A-Z, 0-9, -, _ in site name.
+                                                        </div>
+                                                    </div>
+
+                                                    <div *ngIf="edit_name_exist" class="text-danger">
+                                                        This site name already exists.
+                                                    </div>
+
+                                                </td>
+
+                                                <!-- Description -->
+                                                <td class="col-sm-4" [hidden]="edit_mode[i]" ><p style="width:250px">{{data.description}}</p></td>
+                                                <td class="col-sm-4" [hidden]="!edit_mode[i]">
+                                                    <textarea #desc="ngModel" rows="3" class="form-control" 
+                                                    value="{{data.description}}"
+                                                    [(ngModel)]="edit_model.description" name="desc"
+                                                    (input)="findSiteDetails(data.site_id, data.site_name)"></textarea>
+                                                </td>
+
+                                                <!-- Actions -->
+                                                <td class="col-sm-2">
+                                                    <button class="btn btn-warning" style="margin-right: 5px;" 
+                                                            type="button" (click)="onEdit(i, data)"
+                                                            [hidden]="edit_mode[i]">Edit</button>
+                                                    <button class="btn btn-danger" type="button"
+                                                            (click)="onDelete(data.site_id)" [hidden]="edit_mode[i]">Delete</button>
+                                                    <button class="btn btn-success" style="margin-right: 5px;"
+                                                            type="button" (click)="onSave(i, data._id.$oid)" 
+                                                            [hidden]="!edit_mode[i]"
+                                                            [disabled]="editForm.invalid || edit_id_exist || edit_name_exist">Save</button>
+                                                    <button class="btn btn-light" type="button"
+                                                            [hidden]="!edit_mode[i]" (click)="onCancel()">Cancel</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </form>
+
+                                    <!-- Pagination -->
+
+                                    <div class="d-flex justify-content-center">
+                                        <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="tabSize($event)">
+                                        </pagination-controls>
+                                    </div>
+
+                                </mat-tab>
+
+                                <!-- Tab Add Data -->
+                                <mat-tab label="Add Data">
+                                    <div class="basic-center margin-tab">
+                                    <!-- Form Begin -->
+                                    <form #siteForm="ngForm" (ngSubmit)="onSubmit(siteForm)" style="width:90%" (change)="findSiteDetails()">
+                                        <div class="mb-3 row">
+                                            <label for="site_id" class="col-sm-2 col-form-label">Site ID</label>
+                                            <div class="col-sm-10">
+
+                                                <!-- Site ID -->
+
+                                                <input type="text" class="form-control" id="site_id" 
+                                                    [(ngModel)]="site_model.site_id" name="site_id"
+                                                    #site_id="ngModel" required pattern="^[A-Z0-9_-]+$"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    (input)="findSiteDetails()">
+
+                                                    <!-- Site ID Validation -->
+
+                                                <div *ngIf="site_id.invalid && (site_id.dirty || site_id.touched)"
+                                                    class="text-danger">
+                                                
+                                                    <div *ngIf="site_id.errors?.required">
+                                                        Site id is required.
+                                                    </div>
+                                                    <div *ngIf="site_id.errors?.pattern">
+                                                        Please use only A-Z, 0-9, -, _ in site id.
+                                                    </div>
+                                                    
+                                                </div>
+                                                
+                                                <div *ngIf="add_id_exist" class="text-danger">
+                                                    This site id already exists.
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <label for="site_name" class="col-sm-2 col-form-label">Site Name</label>
+                                            <div class="col-sm-10">
+
+                                                <!-- Site Name -->
+
+                                                <input type="text" class="form-control" id="site_name" 
+                                                [(ngModel)]="site_model.site_name" name="site_name"
+                                                #site_name="ngModel" required pattern="^[a-zA-Z0-9_-\s]+$"
+                                                (input)="findSiteDetails()">
+                                                
+                                                <!-- Site Name Validation -->
+
+                                                <div *ngIf="site_name.invalid && (site_name.dirty || site_name.touched)"
+                                                    class="text-danger">
+                                                
+                                                    <div *ngIf="site_name.errors?.required">
+                                                        Site name is required.
+                                                    </div>
+                                                    <div *ngIf="site_name.errors?.pattern">
+                                                        Please use only a-z, A-Z, 0-9, -, _ in site name.
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div *ngIf="add_name_exist" class="text-danger">
+                                                    This site name already exists.
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Description -->
+
+                                        <div class="mb-3 row">
+                                            <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                            <div class="col-sm-10">
+                                                <textarea class="form-control" id="description" rows="5" 
+                                                    [(ngModel)]="site_model.description" name="description"></textarea>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mb-3" [disabled]="siteForm.invalid || add_id_exist || add_name_exist">Save</button>
+                                    </form>
+                                    <!-- Form End -->
+                                    </div>
+                                </mat-tab>
+                            </mat-tab-group>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- End of Page Content -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <app-footer></app-footer>
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a> 
+
+</div>
